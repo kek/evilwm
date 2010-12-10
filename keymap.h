@@ -11,10 +11,10 @@
 #define KEY_RIGHT	XK_l
 #define KEY_DOWN	XK_j
 #define KEY_UP		XK_k
-#define KEY_LOWER	XK_Insert
+#define KEY_LOWER	XK_z
 #define KEY_ALTLOWER	XK_KP_Insert
-#define KEY_INFO	XK_i
-#define KEY_MAXVERT	XK_equal
+#define KEY_INFO	XK_p
+#define KEY_MAXVERT	XK_v
 #define KEY_MAX		XK_x
 #define KEY_DOCK_TOGGLE XK_d
 #ifdef VWM
@@ -25,7 +25,7 @@
 /* Mixtures of Ctrl, Alt an Escape are used for things like VMWare and
  * XFree86/Cygwin, so the KILL key is an option in the Makefile  */
 #ifndef KEY_KILL
-#define KEY_KILL	XK_Escape
+#define KEY_KILL	XK_w
 #endif
 
 #endif
