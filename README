@@ -45,10 +45,7 @@ do this for you - the tools already exist!).
 If you use the GNOME session manager, you can configure it to
 use evilwm as its window manager.  Run gconf-editor and set the
 key /desktop/gnome/session/required_components/windowmanager
-to "evilwm".  It is probably also a good idea to set the key
-/desktop/gnome/session/required_components/filemanager to an empty string,
-as nautilus (the default) will try to create its own desktop backdrop as
-a full-screen window, and evilwm does not treat these windows specially.
+to "evilwm".
 
 
 CONTROLS
@@ -57,32 +54,33 @@ You can use the mouse to manipulate windows either by click/dragging
 the 1 pixel border, or by holding down Alt and doing so anywhere in the
 client window.  The controls are:
 
-Button 1	Move window.
-Button 2	Lower window.
-Button 3	Resize window.
+Button 1       Move window.
+Button 2       Resize window.
+Button 3       Lower window.
 
 Most keyboard controls are used by holding down Control and Alt, then
 pressing a key.  Available functions are:
 
-Return		Spawn new xterm.
-W		Delete current window.
-Z		Lower current window.
-H, J, K, L	Move window left, down, up or right (16 pixels).
-		Holding Shift resizes the window instead.
-Y, U, B, N	Move window to top-left, top-right, bottom-left or
-		bottom-right of screen.
-P		Show information about current window.
-V		Maximise current window vertically (toggle).
-X		Maximise current window (toggle).
-D		Toggle visible state of docks (e.g., pagers and launch bars).
+Return         Spawn new xterm.
+Escape         Delete current window.
+Insert         Lower current window.
+H, J, K, L     Move window left, down, up or right (16 pixels).
+               Holding Shift resizes the window instead.
+Y, U, B, N     Move window to top-left, top-right, bottom-left or
+               bottom-right of screen.
+I              Show information about current window.
+Equals         Maximise current window vertically (toggle).
+X              Maximise current window (toggle).
+D              Toggle visible state of docks (e.g., pagers and launch bars).
 
 If compiled with virtual desktop support, these functions are also
 available:
 
-F		Fix or unfix window.
-1 - 8		Switch virtual desktop.
-Left		Previous virtual desktop.
-Right		Next virtual desktop.
+F              Fix or unfix window.
+1 - 8          Switch virtual desktop.
+Left           Previous virtual desktop.
+Right          Next virtual desktop.
+A              Switch to the most recently unmapped virtual desktop.
 
 In addition to the above, Alt+Tab can be used to cycle through windows
 on screen.
@@ -96,13 +94,13 @@ commented.  I'd recommend it if you want to learn more about window
 manager theory (or indeed want title bars, etc ;).
 
 http://www.red-bean.com/~decklin/aewm/
-		- aewm homepage
+               - aewm homepage
 
 
 LICENCE
 
 evilwm 1.1
-Copyright (C) 1999-2010 Ciaran Anscomb <evilwm@6809.org.uk>
+Copyright (C) 1999-2011 Ciaran Anscomb <evilwm@6809.org.uk>
 
 This is free software.  You can do what you want to it, but if it
 breaks something, you get to pay for the counselling.  The code was

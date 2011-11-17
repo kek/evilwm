@@ -1,5 +1,5 @@
 /* evilwm - Minimalist Window Manager for X
- * Copyright (C) 1999-2010 Ciaran Anscomb <evilwm@6809.org.uk>
+ * Copyright (C) 1999-2011 Ciaran Anscomb <evilwm@6809.org.uk>
  * see README for license and other details. */
 
 #include <X11/X.h>
@@ -70,6 +70,10 @@ typedef struct {
 #define NET_WM_STATE_ADD        1    /* add/set property */
 #define NET_WM_STATE_TOGGLE     2    /* toggle property  */
 
+/* EWMH window type bits */
+#define EWMH_WINDOW_TYPE_DESKTOP (1<<0)
+#define EWMH_WINDOW_TYPE_DOCK    (1<<1)
+
 #define MAXIMISE_HORZ   (1<<0)
 #define MAXIMISE_VERT   (1<<1)
 
@@ -84,15 +88,15 @@ typedef struct {
 	None, curs, CurrentTime) == GrabSuccess)
 #define grab_button(w, mask, button) do { \
 		XGrabButton(dpy, button, (mask), w, False, ButtonMask, \
-			    GrabModeAsync, GrabModeSync, None, None); \
+		            GrabModeAsync, GrabModeSync, None, None); \
 		XGrabButton(dpy, button, LockMask|(mask), w, False, ButtonMask,\
-			    GrabModeAsync, GrabModeSync, None, None); \
+		            GrabModeAsync, GrabModeSync, None, None); \
 		XGrabButton(dpy, button, numlockmask|(mask), w, False, \
-			    ButtonMask, GrabModeAsync, GrabModeSync, \
-			    None, None); \
+		            ButtonMask, GrabModeAsync, GrabModeSync, \
+		            None, None); \
 		XGrabButton(dpy, button, numlockmask|LockMask|(mask), w, False,\
-			    ButtonMask, GrabModeAsync, GrabModeSync, \
-			    None, None); \
+		            ButtonMask, GrabModeAsync, GrabModeSync, \
+		            None, None); \
 	} while (0)
 #define setmouse(w, x, y) XWarpPointer(dpy, None, w, 0, 0, 0, 0, x, y)
 #define get_mouse_position(xp,yp,root) do { \
@@ -106,12 +110,6 @@ typedef struct {
 #define add_fixed(c) c->vdesk = VDESK_FIXED
 #define remove_fixed(c) c->vdesk = c->screen->vdesk
 
-#define discard_enter_events() do { \
-		XEvent dummy; \
-		XSync(dpy, False); \
-		while (XCheckMaskEvent(dpy, EnterWindowMask, &dummy)); \
-	} while (0)
-
 /* screen structure */
 
 typedef struct ScreenInfo ScreenInfo;
@@ -124,6 +122,7 @@ struct ScreenInfo {
 #ifdef VWM
 	unsigned int vdesk;
 	XColor fc;
+	unsigned old_vdesk; /* most recently unmapped vdesk, so user may toggle back to it */
 #endif
 	char *display;
 	int docks_visible;
@@ -151,7 +150,7 @@ struct Client {
 	int             win_gravity;
 	int             old_border;
 #ifdef VWM
-	unsigned long   vdesk;
+	unsigned int vdesk;
 #endif
 	int             is_dock;
 	int             remove;  /* set when client needs to be removed */
@@ -166,7 +165,7 @@ struct Application {
 	unsigned int width, height;
 	int is_dock;
 #ifdef VWM
-	unsigned long vdesk;
+	unsigned int vdesk;
 #endif
 };
 
@@ -265,6 +264,7 @@ void send_config(Client *c);
 void send_wm_delete(Client *c, int kill_client);
 void set_wm_state(Client *c, int state);
 void set_shape(Client *c);
+void *get_property(Window w, Atom property, Atom req_type, unsigned long *nitems_return);
 
 /* events.c */
 
@@ -277,6 +277,7 @@ extern int ignore_xerror;
 int handle_xerror(Display *dsply, XErrorEvent *e);
 void spawn(const char *const cmd[]);
 void handle_signal(int signo);
+void discard_enter_events(Client *except);
 
 /* new.c */
 
@@ -318,5 +319,6 @@ void ewmh_set_net_active_window(Client *c);
 #ifdef VWM
 void ewmh_set_net_wm_desktop(Client *c);
 #endif
+unsigned int ewmh_get_net_wm_window_type(Window w);
 void ewmh_set_net_wm_state(Client *c);
 void ewmh_set_net_frame_extents(Window w);

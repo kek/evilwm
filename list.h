@@ -1,5 +1,5 @@
 /* evilwm - Minimalist Window Manager for X
- * Copyright (C) 1999-2010 Ciaran Anscomb <evilwm@6809.org.uk>
+ * Copyright (C) 1999-2011 Ciaran Anscomb <evilwm@6809.org.uk>
  * see README for license and other details. */
 
 #ifndef __LIST_H__
@@ -11,6 +11,7 @@ struct list {
 };
 
 /* Each of these return the new pointer to the head of the list: */
+struct list *list_insert_before(struct list *list, struct list *before, void *data);
 struct list *list_prepend(struct list *list, void *data);
 struct list *list_append(struct list *list, void *data);
 struct list *list_delete(struct list *list, void *data);

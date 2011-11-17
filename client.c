@@ -1,11 +1,13 @@
 /* evilwm - Minimalist Window Manager for X
- * Copyright (C) 1999-2010 Ciaran Anscomb <evilwm@6809.org.uk>
+ * Copyright (C) 1999-2011 Ciaran Anscomb <evilwm@6809.org.uk>
  * see README for license and other details. */
 
 #include <stdio.h>
 #include <stdlib.h>
 #include "evilwm.h"
 #include "log.h"
+
+#define MAXIMUM_PROPERTY_LENGTH 4096
 
 static int send_xmessage(Window w, Atom a, long x);
 
@@ -40,9 +42,27 @@ void client_raise(Client *c) {
 	ewmh_set_net_client_list_stacking(c->screen);
 }
 
+/* This doesn't just call XLowerWindow(), as that could push the window
+ * below "DESKTOP" type windows we're not managing. */
 void client_lower(Client *c) {
-	XLowerWindow(dpy, c->parent);
-	clients_stacking_order = list_to_head(clients_stacking_order, c);
+	struct list *iter;
+	Client *below;
+	Window order[2];
+	/* Find lowest other client in stacking order that is visible on the
+	 * same screen. */
+	for (iter = clients_stacking_order; iter; iter = iter->next) {
+		below = iter->data;
+		if (below == c)
+			return;
+		if (below->screen == c->screen && (is_fixed(below) || below->vdesk == c->screen->vdesk))
+			break;
+	}
+	if (!iter) return;
+	order[0] = below->parent;
+	order[1] = c->parent;
+	XRestackWindows(dpy, order, 2);
+	clients_stacking_order = list_delete(clients_stacking_order, c);
+	clients_stacking_order = list_insert_before(clients_stacking_order, iter, c);
 	ewmh_set_net_client_list_stacking(c->screen);
 }
 
@@ -89,6 +109,7 @@ void gravitate_border(Client *c, int bw) {
 		break;
 	case NorthEastGravity:
 		dx = -bw;
+		dy = bw;
 		break;
 	case EastGravity:
 		dx = -bw;
@@ -260,3 +281,20 @@ void set_shape(Client *c) {
 	}
 }
 #endif
+
+void *get_property(Window w, Atom property, Atom req_type,
+	           unsigned long *nitems_return) {
+	Atom actual_type;
+	int actual_format;
+	unsigned long bytes_after;
+	unsigned char *prop;
+	if (XGetWindowProperty(dpy, w, property,
+	                       0L, MAXIMUM_PROPERTY_LENGTH / 4, False,
+	                       req_type, &actual_type, &actual_format,
+	                       nitems_return, &bytes_after, &prop) == Success) {
+		if (actual_type == req_type)
+			return (void *)prop;
+		XFree(prop);
+	}
+	return NULL;
+}
