@@ -1,7 +1,7 @@
 #ifndef _KEYMAP_H
 #define _KEYMAP_H
 
-#define KEY_NEXT        XK_Tab
+#define KEY_NEXT        XK_section
 #define KEY_NEW         XK_Return
 #define KEY_TOPLEFT     XK_y
 #define KEY_TOPRIGHT    XK_u
@@ -14,7 +14,7 @@
 #define KEY_LOWER       XK_Insert
 #define KEY_ALTLOWER    XK_KP_Insert
 #define KEY_INFO        XK_i
-#define KEY_MAXVERT     XK_equal
+#define KEY_MAXVERT     XK_0
 #define KEY_MAX         XK_x
 #define KEY_DOCK_TOGGLE XK_d
 #ifdef VWM

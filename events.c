@@ -177,9 +177,9 @@ static void handle_button_event(XButtonEvent *e) {
 		switch (e->button) {
 			case Button1:
 				drag(c); break;
-			case Button2:
-				sweep(c); break;
 			case Button3:
+				sweep(c); break;
+			case Button2:
 				client_lower(c); break;
 			default: break;
 		}
